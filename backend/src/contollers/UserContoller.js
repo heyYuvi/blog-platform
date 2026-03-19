@@ -12,7 +12,7 @@ export const register = async (req, res) => {
         if (!result.success) {
             return res.status(400).json({
                 success: false,
-                errors: result.error.errors.map((err) => err.message)
+                errors: result.error.issues
             });
         }
 
@@ -37,12 +37,12 @@ export const register = async (req, res) => {
         return res.status(201).json({
             success: true,
             message: "User Registered",
-            data:{
-                user:{
-                id: user._id,
-                name: user.name,
-                email: user.email
-            }
+            data: {
+                user: {
+                    id: user._id,
+                    name: user.name,
+                    email: user.email
+                }
             }
         });
     } catch (error) {
@@ -62,13 +62,13 @@ export const login = async (req, res) => {
         if (!result.success) {
             return res.status(400).json({
                 success: false,
-                errors: result.error.errors.map((err) => err.message)
+                error: result.error.issues
             });
         }
 
         const data = result.data;
 
-        if(!process.env.JWT_SECRET){
+        if (!process.env.JWT_SECRET) {
             throw new Error('JWT_SECRET is not defined');
         }
 
@@ -97,14 +97,14 @@ export const login = async (req, res) => {
         return res.json({
             message: "Login successful",
             success: true,
-            data:{
+            data: {
                 token,
-            user:{
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                avatar: user.avatar
-            }
+                user: {
+                    id: user._id,
+                    name: user.name,
+                    email: user.email,
+                    avatar: user.avatar
+                }
             }
         });
     } catch (error) {
