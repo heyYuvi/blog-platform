@@ -1,6 +1,7 @@
 import postCheck from "../validators/postValidation.js";
 import Post from '../models/Post.js'
 import updatePostCheck from "../validators/updatePostValidation.js";
+import User from "../models/User.js";
 
 // Post something
 
@@ -138,12 +139,102 @@ export const deletePost = async (req, res) => {
         return res.json({
             success: true,
             message: "Post deleted",
-            data:{
+            data: {
                 id: post._id
             }
         });
     } catch (error) {
         console.error(`Delete error: ${error.message}`);
+        return res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
+    }
+}
+
+// See Post
+
+export const getPost = async (req, res) => {
+    try{
+        const { search, author } = req.query;
+
+    const query = {};
+
+    if(search){
+        query.title = {$regex: search, $options: 'i'}
+    }
+    if(author){
+        const users = await User.find({
+            name: {$regex: author, $options: 'i'}
+        });
+
+        const userId = users.map(user => user._id)
+        if(userId.length > 0){
+            query.author = {$in: userId};
+        }else{
+            return res.json({
+                success: true,
+                length: 0,
+                data: []
+            });
+        }
+    }
+
+    const posts = await Post.find(query).sort({ createdAt: -1}).populate('author', 'name email');
+    return res.json({
+        success: true,
+        length: posts.length,
+        data: posts.map(post => ({ //Implicit return
+            id: post._id,
+            title: post.title,
+            content: post.content,
+            author:{
+                id: post.author._id,
+                name: post.author.name,
+                email: post.author.email
+            },
+            createdAt: post.createdAt
+        }))
+    });
+    }catch(error){
+        console.error(`Get post error: ${error.message}`);
+        return res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
+    }
+}
+
+// Get Single Post
+
+export const singlePost = async (req, res) =>{
+    try{
+        const { id } = req.params;
+
+    const post = await Post.findById(id).populate('author', 'name email');;
+    if(!post){
+        return res.status(404).json({
+            success: false,
+            message: "Post no found"
+        });
+    }
+
+    return res.json({
+        success: true,
+        data:{
+            id: post._id,
+            title: post.title,
+            content: post.content,
+            author:{
+                id: post.author._id,
+                name: post.author.name,
+                email: post.author.email
+            },
+            createdAt: post.createdAt
+        }
+    });
+    }catch(error){
+        console.error(`Get Single post error: ${error.message}`);
         return res.status(500).json({
             success: false,
             message: "Server Error"
