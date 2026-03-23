@@ -241,3 +241,42 @@ export const singlePost = async (req, res) =>{
         });
     }
 }
+
+// Like logic 
+
+export const toggleLike = async (req, res) =>{
+    try{
+        const post = await Post.findById(req.params.id);
+    if(!post){
+        return res.status(404).json({
+            success: false,
+            message: "Post not found"
+        });
+    }
+
+    const userId = req.user._id;
+
+    const alreadyLiked = post.likes.includes(userId);
+
+    if(alreadyLiked){
+        post.likes.pull(userId);
+    }
+    else{
+        post.likes.push(userId);
+    }
+
+    await post.save();
+
+    return res.json({
+        success: true,
+        likes: !alreadyLiked,
+        tottalLikes: post.likes.length
+    });
+    }catch(error){
+        console.error(`ToggleLike error: ${error.message}`);
+        return res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
+    }
+}
