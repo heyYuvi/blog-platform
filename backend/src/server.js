@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import userRoutes from './routes/userRoutes.js'
 import postRoutes from './routes/postRoutes.js'
+import commentRoutes from './routes/commentRoute.js'
 import { protect } from './middlewares/authMiddleware.js';
 
 dotenv.config(); //reads .env file and attach variable to process.env.VARIABLE_NAME
@@ -23,6 +24,8 @@ app.get('/', protect, (req, res) => {
 app.use('/api/user', userRoutes);
 
 app.use('/api', postRoutes);
+
+app.use('/api', commentRoutes);
 
 const startServer = async () => {
     try {

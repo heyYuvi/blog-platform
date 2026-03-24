@@ -2,6 +2,9 @@ import postCheck from "../validators/postValidation.js";
 import Post from '../models/Post.js'
 import updatePostCheck from "../validators/updatePostValidation.js";
 import User from "../models/User.js";
+import commentCheck from "../validators/commentValidtion.js";
+import Comment from '../models/Comment.js';
+
 
 // Post something
 
