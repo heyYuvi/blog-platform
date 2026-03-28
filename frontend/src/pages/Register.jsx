@@ -43,7 +43,7 @@ const Register = () =>{
                 <input type="text" value={form.email} name="email" placeholder="Email" onChange={handleChange} className="border p-3 rounded-lg w-full mb-4 focus:outline-0 focus:ring-2 focus:ring-blue-500"></input>
                 <input type="text" value={form.password} name="password" placeholder="Password" onChange={handleChange} className="border p-3 rounded-lg w-full mb-6 focus:outline-0 focus:ring-2 focus:ring-blue-500"></input>
                 <button type="submit" className="border p-3 rounded-lg w-full bg-blue-400 font-bold text-white cursor-pointer hover:bg-blue-500 transition">Submit</button>
-                <p className="text-center mt-4 text-gray-500 text-sm">Already have an account?<Link to="/" className="hover:underline text-blue-500 ml-1">Login</Link></p>
+                <p className="text-center mt-4 text-gray-500 text-sm">Already have an account?<Link to="/Login" className="hover:underline text-blue-500 ml-1">Login</Link></p>
             </form>
         </div>
     )
